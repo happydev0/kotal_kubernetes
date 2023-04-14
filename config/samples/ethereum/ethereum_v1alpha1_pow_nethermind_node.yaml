@@ -1,0 +1,61 @@
+# WARNING: DON'T use the following secrets in production
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pow-nethermind-account-key
+stringData:
+  # address 0x1990E5760d9f8Ae0ec55dF8B0819C77e59846Ff2
+  key: bb30a68be4d1f8b54755398f81704fcbd00df4aa7d3cad02547d61291ac252b0
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pow-nethermind-account-password
+stringData:
+  password: secret
+---
+apiVersion: ethereum.kotal.io/v1alpha1
+kind: Node
+metadata:
+  name: pow-nethermind-node
+spec:
+  ########### Genesis block spec ###########
+  genesis:
+    chainId: 20189
+    networkId: 20189
+    ethash: {}
+    forks:
+      homestead: 0
+      eip150: 0
+      eip155: 0
+      eip158: 0
+      byzantium: 0
+      constantinople: 0
+      petersburg: 0
+      istanbul: 0
+      muirglacier: 0
+      berlin: 0
+      london: 0
+      arrowGlacier: 0
+    coinbase: "0x071e2c1067c24607ff00ceebbe83a38063bdedd8"
+    difficulty: "0x1"
+    gasLimit: "0x47b760"
+    nonce: "0x0"
+    timestamp: "0x5f69fcd9"
+    accounts:
+      - address: "0x48c5F25a884116d58A6287B72C9b069F936C9489"
+        balance: "0xffffffffffffffffffff"
+  ########### node spec ###########
+  client: nethermind
+  logging: warn
+  miner: true
+  coinbase: "0x1990E5760d9f8Ae0ec55dF8B0819C77e59846Ff2"
+  import:
+    privateKeySecretName: pow-nethermind-account-key
+    passwordSecretName: pow-nethermind-account-password
+  syncMode: full
+  staticNodes:
+    - "enode://e578d440680b323545a4eb0a9c792ec1921bee933efa81238cf78c89768d15d1b1a817515825f9ab5f9cc8398ffad656e1d816e232ac30a0ab53b83f6125d946@10.96.232.189:30303"
+  resources:
+    cpu: "1"
+    memory: "1Gi"

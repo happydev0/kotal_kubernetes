@@ -1,0 +1,52 @@
+# Assuming cert manager is installed in the environment
+# we will use cert manager to issue certificates
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: self-signed-issuer
+spec:
+  selfSigned: {}
+---
+# create certificate for prysm beacon node
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: beaconnode-cert
+spec:
+  dnsNames:
+    - "prysm-beacon-node"
+    - "prysm-beacon-node.svc"
+    - "prysm-beacon-node.svc.cluster.local"
+  secretName: beaconnode-cert
+  issuerRef:
+    name: self-signed-issuer
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: jwt-secret
+stringData:
+  secret: fbe0c28a10274b27babf3c51e88a7435318e25fad4de877e5a63a67d0d65fdbb
+---
+apiVersion: ethereum2.kotal.io/v1alpha1
+kind: BeaconNode
+metadata:
+  name: prysm-beacon-node
+spec:
+  network: goerli
+  client: prysm
+  logging: info
+  rpc: true
+  rpcPort: 8888
+  grpc: true
+  grpcPort: 9999
+  executionEngineEndpoint: http://goerli-geth-node:8551
+  jwtSecretName: "jwt-secret"
+  checkpointSyncUrl: "https://beaconstate-goerli.chainsafe.io/eth/v2/debug/beacon/states/finalized"
+  feeRecipient: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+  certSecretName: "beaconnode-cert"
+  resources:
+    # these resources are only for testing
+    # change resources depending on your use case
+    cpu: "1"
+    memory: "1Gi"

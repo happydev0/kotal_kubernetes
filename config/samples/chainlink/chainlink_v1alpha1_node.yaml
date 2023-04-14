@@ -1,0 +1,86 @@
+# Assuming cert manager is installed in the environment
+# we will use cert manager to issue certificates
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: self-signed-issuer
+spec:
+  selfSigned: {}
+---
+# create certificate for chainlink node
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: chainlink-node-cert
+spec:
+  dnsNames:
+    - "chainlink-node.svc"
+    - "chainlink-node.svc.cluster.local"
+  secretName: chainlink-node-cert
+  issuerRef:
+    name: self-signed-issuer
+---
+# DON'T USE THIS DATABASE IN PRODUCTION
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  containers:
+    - name: postgres
+      image: postgres
+      env:
+        - name: POSTGRES_PASSWORD
+          value: fE2xXKDnR3ns489X
+      ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+# WARNING: DON'T use the following secrets in production
+# this password is used by keystore and api credentials
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-password
+stringData:
+  password: fE2xXKDnR3ns489X
+---
+apiVersion: chainlink.kotal.io/v1alpha1
+kind: Node
+metadata:
+  name: chainlink-node
+spec:
+  ethereumChainId: 1
+  # deploy Ethereum node and enable websocket server
+  ethereumWsEndpoint: "wss://my-eth-node:8546"
+  # deploy 2 Ethereum nodes and enable HTTP JSON-RPC server
+  ethereumHttpEndpoints:
+    - "http://my-eth-node:8545"
+    - "http://my-eth-node2:8545"
+  linkContractAddress: "0x01BE23585060835E02B77ef475b0Cc51aA1e0709"
+  databaseURL: "postgresql://postgres:fE2xXKDnR3ns489X@postgres:5432/postgres?sslmode=disable"
+  keystorePasswordSecretName: "my-password"
+  certSecretName: "chainlink-node-cert"
+  tlsPort: 9999
+  logging: debug
+  apiCredentials:
+    email: "mostafa@kotal.co"
+    passwordSecretName: "my-password"
+  resources:
+    cpu: "1"
+    cpuLimit: "2"
+    memory: "1Gi"
+    memoryLimit: "2Gi"

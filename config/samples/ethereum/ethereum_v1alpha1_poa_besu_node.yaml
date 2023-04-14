@@ -1,0 +1,64 @@
+# WARNING: DON'T use the following secrets in production
+apiVersion: v1
+kind: Secret
+metadata:
+  name: poa-besu-nodekey
+stringData:
+  key: "7fb5b8b783a35f3fafbd8e36582ec5eec507e509a6077aa6c84a48afd4d4cf06"
+---
+apiVersion: ethereum.kotal.io/v1alpha1
+kind: Node
+metadata:
+  name: poa-besu-node
+spec:
+  ########### Genesis block spec ###########
+  genesis:
+    chainId: 20189
+    networkId: 20189
+    clique:
+      blockPeriod: 15
+      epochLength: 100
+      signers:
+        - "0xcF2C3fB8F36A863FD1A8c72E2473f81744B4CA6C"
+        - "0x1990E5760d9f8Ae0ec55dF8B0819C77e59846Ff2"
+        - "0xB87c1c66b36D98D1A74a9875EbA12c001e0bcEda"
+    forks:
+      homestead: 0
+      eip150: 0
+      eip155: 0
+      eip158: 0
+      byzantium: 0
+      constantinople: 0
+      petersburg: 0
+      istanbul: 0
+      muirglacier: 0
+      berlin: 0
+      london: 0
+      arrowGlacier: 0
+    coinbase: "0x071E2c1067c24607fF00cEEBbe83a38063BDEDd8"
+    difficulty: "0xfff"
+    gasLimit: "0x47b760"
+    nonce: "0x0"
+    timestamp: "0x0"
+    accounts:
+      - address: "0x48c5F25a884116d58A6287B72C9b069F936C9489"
+        balance: "0xffffffffffffffffffff"
+  ########### node spec ###########
+  client: besu
+  rpc: true
+  nodePrivateKeySecretName: poa-besu-nodekey
+  rpcPort: 8599
+  corsDomains:
+    - all
+  hosts:
+    - all
+  rpcAPI:
+    - web3
+    - net
+    - eth
+    - clique
+  resources:
+    cpu: "1"
+    cpuLimit: "1"
+    memory: "1Gi"
+    memoryLimit: "2Gi"

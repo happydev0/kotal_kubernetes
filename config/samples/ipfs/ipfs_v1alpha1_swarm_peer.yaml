@@ -1,0 +1,12 @@
+apiVersion: ipfs.kotal.io/v1alpha1
+kind: Peer
+metadata:
+  name: peer-sample
+spec:
+  swarmKeySecretName: my-swarm-key
+  routing: dhtclient
+  apiPort: 8999
+  gatewayPort: 4444
+  resources:
+    cpu: "1"
+    memory: "1Gi"

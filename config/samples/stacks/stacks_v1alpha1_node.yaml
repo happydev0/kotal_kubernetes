@@ -1,0 +1,36 @@
+# WARNING: DON'T use the following secrets in production
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bitcoin-node-rpc-password
+stringData:
+  password: blockstacksystem
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: node-private-key
+stringData:
+  key: 7d6774f1bfcd3b0e0ed81ae6094f17232056ed4a560408353ba92ee70d53647001
+---
+apiVersion: stacks.kotal.io/v1alpha1
+kind: Node
+metadata:
+  name: stacks-node
+spec:
+  network: mainnet
+  nodePrivateKeySecretName: node-private-key
+  p2pPort: 8888
+  rpcPort: 7777
+  bitcoinNode:
+    endpoint: bitcoin.blockstack.com
+    rpcPort: 8332
+    p2pPort: 8333
+    rpcUsername: blockstack
+    rpcPasswordSecretName: bitcoin-node-rpc-password
+  resources:
+    cpu: "2"
+    cpuLimit: "4"
+    memory: "2Gi"
+    memoryLimit: "4Gi"
+    storage: "10Gi"

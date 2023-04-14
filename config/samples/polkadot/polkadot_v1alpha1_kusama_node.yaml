@@ -1,0 +1,29 @@
+# WARNING: DON'T use the following secret in production
+apiVersion: v1
+kind: Secret
+metadata:
+  name: polkadot-node-key
+stringData:
+  # Identity 12D3KooWFEHU9FXqGCL6ify4rqcon31WYViCnUfA6aVYTjRXqJ5F
+  key: 2938f18547765c18d44c8b8ebf649e97f9a6f0c5afcb241ae93a9ff252ea4a2c
+---
+apiVersion: polkadot.kotal.io/v1alpha1
+kind: Node
+metadata:
+  name: node-sample
+spec:
+  network: kusama
+  nodePrivateKeySecretName: "polkadot-node-key"
+  logging: info
+  syncMode: fast
+  pruning: true
+  retainedBlocks: 1024
+  rpc: true
+  rpcPort: 9933
+  ws: true
+  wsPort: 9944
+  telemetry: true
+  prometheus: true
+  resources:
+    cpu: "1"
+    memory: "1Gi"

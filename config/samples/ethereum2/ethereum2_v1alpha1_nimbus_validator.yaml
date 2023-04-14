@@ -1,0 +1,19 @@
+apiVersion: ethereum2.kotal.io/v1alpha1
+kind: Validator
+metadata:
+  name: nimbus-validator
+spec:
+  client: nimbus
+  network: mainnet
+  logging: info
+  beaconEndpoints:
+    - http://nimbus-beacon-node:8888
+  graffiti: Validated by Kotal
+  keystores:
+    - secretName: my-validator
+  feeRecipient: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+  resources:
+    # these resources are only for testing
+    # change resources depending on your use case
+    cpu: "1"
+    memory: "1Gi"

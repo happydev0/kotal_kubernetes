@@ -1,0 +1,67 @@
+# WARNING: DON'T use the following secrets in production
+apiVersion: v1
+kind: Secret
+metadata:
+  name: poa-geth-account-key
+stringData:
+  # address 0xB87c1c66b36D98D1A74a9875EbA12c001e0bcEda
+  key: ef7fe53791454d96b0264fee1c788b6ff445fc327df8a8a78ca4da60821f69c9
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: poa-geth-account-password
+stringData:
+  password: secret
+---
+apiVersion: ethereum.kotal.io/v1alpha1
+kind: Node
+metadata:
+  name: poa-geth-node
+spec:
+  ########### Genesis block spec ###########
+  genesis:
+    chainId: 20189
+    networkId: 20189
+    clique:
+      blockPeriod: 15
+      epochLength: 100
+      signers:
+        - "0xcF2C3fB8F36A863FD1A8c72E2473f81744B4CA6C"
+        - "0x1990E5760d9f8Ae0ec55dF8B0819C77e59846Ff2"
+        - "0xB87c1c66b36D98D1A74a9875EbA12c001e0bcEda"
+    forks:
+      homestead: 0
+      eip150: 0
+      eip155: 0
+      eip158: 0
+      byzantium: 0
+      constantinople: 0
+      petersburg: 0
+      istanbul: 0
+      muirglacier: 0
+      berlin: 0
+      london: 0
+      arrowGlacier: 0
+    coinbase: "0x071E2c1067c24607fF00cEEBbe83a38063BDEDd8"
+    difficulty: "0xfff"
+    gasLimit: "0x47b760"
+    nonce: "0x0"
+    timestamp: "0x0"
+    accounts:
+      - address: "0x48c5F25a884116d58A6287B72C9b069F936C9489"
+        balance: "0xffffffffffffffffffff"
+  ########### node spec ###########
+  client: geth
+  miner: true
+  coinbase: "0xB87c1c66b36D98D1A74a9875EbA12c001e0bcEda"
+  staticNodes:
+    - "enode://36f50b80f06135c8d2871d1c0c2faee6d3d952f8c100870fc41d61ac9e535fa6367409f9b2ac8658147273677f90c9fddee4f9269dad069a1f78ae3297a13b2e@10.96.161.221:30303"
+  import:
+    privateKeySecretName: poa-geth-account-key
+    passwordSecretName: poa-geth-account-password
+  resources:
+    cpu: "1"
+    cpuLimit: "1"
+    memory: "1Gi"
+    memoryLimit: "2Gi"

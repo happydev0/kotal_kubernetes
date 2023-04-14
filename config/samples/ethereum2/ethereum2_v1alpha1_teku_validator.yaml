@@ -1,0 +1,22 @@
+apiVersion: ethereum2.kotal.io/v1alpha1
+kind: Validator
+metadata:
+  name: teku-validator
+spec:
+  client: teku
+  network: mainnet
+  beaconEndpoints:
+    - http://teku-beacon-node:8888
+  graffiti: Validated by Kotal
+  # my-vaidator secret must exist before deploying the validator
+  # my-validator secret must has [keystore] and [password] keys
+  # key is the keystore file
+  # password is the password file
+  keystores:
+    - secretName: my-validator
+  feeRecipient: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+  resources:
+    # these resources are only for testing
+    # change resources depending on your use case
+    cpu: "1"
+    memory: "1Gi"
